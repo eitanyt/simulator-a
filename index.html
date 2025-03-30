@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <script type="module" src="/src/main.js"></script>
+  </head>
+  <body>
+    <header>
+        <h1>סימולטור מבנים - פאנל בנייה קלה</h1>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="controls">
+                <h2>הגדרות המבנה</h2>
+                
+                <div class="panel-size-toggle">
+                    <button id="size-small" class="active">50×50 ס"מ</button>
+                    <button id="size-large">100×100 ס"מ</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="width">רוחב (במטרים):</label>
+                    <input type="number" id="width" min="1" max="20" value="3" step="0.5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="length">אורך (במטרים):</label>
+                    <input type="number" id="length" min="1" max="20" value="4" step="0.5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="height">גובה (במטרים):</label>
+                    <input type="number" id="height" min="2" max="10" value="2.5" step="0.5">
+                </div>
+                
+                <div class="form-group">
+                    <label for="roof-angle">זווית הגג (במעלות):</label>
+                    <input type="range" id="roof-angle" min="15" max="45" value="30" step="5">
+                    <span id="roof-angle-value">30°</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="door-position">מיקום דלת כניסה:</label>
+                    <select id="door-position">
+                        <option value="front">חזית</option>
+                        <option value="back">אחורי</option>
+                        <option value="left">שמאל</option>
+                        <option value="right">ימין</option>
+                        <option value="none">ללא דלת</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="window-count">מספר חלונות:</label>
+                    <input type="number" id="window-count" min="0" max="10" value="2">
+                </div>
+                
+                <button id="calculate-btn">חשב כמות פאנלים נדרשת</button>
+            </div>
+            
+            <div class="visualization">
+                <div id="scene-container"></div>
+            </div>
+        </div>
+        
+        <div class="summary">
+            <h2>סיכום מבנה</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>סוג פאנל</th>
+                        <th>גודל (ס"מ)</th>
+                        <th>כמות</th>
+                    </tr>
+                </thead>
+                <tbody id="summary-table">
+                    <tr>
+                        <td>פאנלים לקירות</td>
+                        <td>50×50</td>
+                        <td>48</td>
+                    </tr>
+                    <tr>
+                        <td>פאנלים לגג</td>
+                        <td>50×50</td>
+                        <td>36</td>
+                    </tr>
+                    <tr>
+                        <td>ניצבים</td>
+                        <td>-</td>
+                        <td>24</td>
+                    </tr>
+                    <tr>
+                        <td>פאנלים לדלת וחלונות</td>
+                        <td>50×50</td>
+                        <td>6</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">סה"כ פאנלים</th>
+                        <th id="total-panels">114</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
