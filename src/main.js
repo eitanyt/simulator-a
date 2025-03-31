@@ -65,21 +65,24 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
             // נקה את המבנה הקודם
             scene.remove(house);
             house = new THREE.Group();
-            
+        
             // יצירת חומרים
             const wallMaterial = new THREE.MeshLambertMaterial({ color: 0xf5f5f5, wireframe: false });
             const panelEdgeMaterial = new THREE.LineBasicMaterial({ color: 0x888888 });
             const roofMaterial = new THREE.MeshLambertMaterial({ color: 0xAA7755 });
-            
+        
             // יצירת קירות
             createWalls(wallMaterial, panelEdgeMaterial);
-            
+        
             // יצירת גג
             createRoof(roofMaterial, panelEdgeMaterial);
-            
+        
+            // הוספת דלת וחלונות
+            createDoorAndWindows();
+        
             // הוספת המבנה לסצנה
             scene.add(house);
-            
+        
             // עדכון חישובי הפאנלים
             updatePanelCalculations();
         }
@@ -257,59 +260,177 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
             house.add(panel);
         }
         
+        function createDoorAndWindows() {
+            const doorMaterial = new THREE.MeshLambertMaterial({ color: 0x654321 });
+            const windowMaterial = new THREE.MeshLambertMaterial({ color: 0x87CEEB, transparent: true, opacity: 0.7 });
+        
+            // יצירת דלת
+            const doorPosition = document.getElementById('door-position').value;
+            const doorOffset = parseFloat(document.getElementById('door-offset').value);
+            
+            if (doorPosition !== 'none') {
+                const doorGeometry = new THREE.BoxGeometry(1, 2, 0.1);
+                const door = new THREE.Mesh(doorGeometry, doorMaterial);
+                
+                // מיקום הדלת בהתאם לבחירה
+                switch(doorPosition) {
+                    case 'front':
+                        door.position.set(doorOffset - buildingWidth/2, 1, -buildingLength/2 - 0.05);
+                        break;
+                    case 'back':
+                        door.position.set(doorOffset - buildingWidth/2, 1, buildingLength/2 + 0.05);
+                        door.rotateY(Math.PI);
+                        break;
+                    case 'left':
+                        door.position.set(-buildingWidth/2 - 0.05, 1, doorOffset - buildingLength/2);
+                        door.rotateY(-Math.PI/2);
+                        break;
+                    case 'right':
+                        door.position.set(buildingWidth/2 + 0.05, 1, doorOffset - buildingLength/2);
+                        door.rotateY(Math.PI/2);
+                        break;
+                }
+                house.add(door);
+            }
+        
+            // יצירת חלונות
+            const windowsList = document.querySelectorAll('.window-item');
+            windowsList.forEach(windowItem => {
+                const wall = windowItem.querySelector('.window-wall').value;
+                const size = parseFloat(windowItem.querySelector('.window-size').value);
+                const offset = parseFloat(windowItem.querySelector('.window-offset').value);
+                const height = parseFloat(windowItem.querySelector('.window-height').value);
+        
+                const windowGeometry = new THREE.BoxGeometry(size, size, 0.1);
+                const window = new THREE.Mesh(windowGeometry, windowMaterial);
+        
+                switch(wall) {
+                    case 'front':
+                        window.position.set(offset - buildingWidth/2, height, -buildingLength/2 - 0.05);
+                        break;
+                    case 'back':
+                        window.position.set(offset - buildingWidth/2, height, buildingLength/2 + 0.05);
+                        window.rotateY(Math.PI);
+                        break;
+                    case 'left':
+                        window.position.set(-buildingWidth/2 - 0.05, height, offset - buildingLength/2);
+                        window.rotateY(-Math.PI/2);
+                        break;
+                    case 'right':
+                        window.position.set(buildingWidth/2 + 0.05, height, offset - buildingLength/2);
+                        window.rotateY(Math.PI/2);
+                        break;
+                }
+                house.add(window);
+            });
+        }
+        
+        // Add window management functions
+        function initWindowControls() {
+            document.getElementById('add-window').addEventListener('click', () => {
+                const template = document.querySelector('.window-item').cloneNode(true);
+                document.getElementById('windows-list').appendChild(template);
+                template.querySelector('.remove-window').addEventListener('click', (e) => {
+                    e.target.closest('.window-item').remove();
+                    createHouse();
+                });
+                createHouse();
+            });
+        
+            // Add event listener for initial remove button
+            document.querySelector('.remove-window').addEventListener('click', (e) => {
+                if (document.querySelectorAll('.window-item').length > 1) {
+                    e.target.closest('.window-item').remove();
+                    createHouse();
+                }
+            });
+        
+            // Add event listeners for all inputs
+            ['door-position', 'door-offset'].forEach(id => {
+                document.getElementById(id).addEventListener('change', () => createHouse());
+            });
+        }
+        
+        // Call initWindowControls after the DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initWindowControls();
+        });
+        
         function updatePanelCalculations() {
             // חישוב כמות הפאנלים הנדרשת
             const widthPanels = Math.ceil(buildingWidth / panelSize);
             const lengthPanels = Math.ceil(buildingLength / panelSize);
             const heightPanels = Math.ceil(buildingHeight / panelSize);
-            
+        
             // הפאנלים לקירות
             const frontWallPanels = widthPanels * heightPanels;
             const sideWallPanels = lengthPanels * heightPanels;
             const wallPanels = (frontWallPanels * 2) + (sideWallPanels * 2);
-            
+        
             // חישוב גובה שיא הגג
             const radians = THREE.MathUtils.degToRad(roofAngle);
             const roofPeakHeight = (buildingWidth / 2) * Math.tan(radians);
-            const roofLength = Math.sqrt(Math.pow(buildingWidth/2, 2) + Math.pow(roofPeakHeight, 2));
-            
+            const roofLength = Math.sqrt(Math.pow(buildingWidth / 2, 2) + Math.pow(roofPeakHeight, 2));
+        
             // הפאנלים לגג
             const roofWidthPanels = Math.ceil(roofLength / panelSize);
             const roofPanels = roofWidthPanels * lengthPanels * 2;
-            
+        
             // הפאנלים לחלונות ודלתות
-            const doorWindowPanels = parseInt(document.getElementById('window-count').value) + 1;
-            
+            const windowCount = document.querySelectorAll('.window-item').length;
+            const doorExists = document.getElementById('door-position').value !== 'none';
+            const doorWindowPanels = windowCount + (doorExists ? 1 : 0);
+                
             // הניצבים הנדרשים
             const verticalSupports = (widthPanels + 1) * 2 + (lengthPanels + 1) * 2;
-            
+        
+            // חישוב מחירים
+            const wallPanelPrice = parseFloat(document.getElementById('wall-panel-price').value);
+            const roofPanelPrice = parseFloat(document.getElementById('roof-panel-price').value);
+            const supportPrice = parseFloat(document.getElementById('support-price').value);
+        
+            const wallPanelsCost = wallPanels * wallPanelPrice;
+            const roofPanelsCost = roofPanels * roofPanelPrice;
+            const supportsCost = verticalSupports * supportPrice;
+        
+            const totalCost = wallPanelsCost + roofPanelsCost + supportsCost;
+        
             // עדכון הטבלה
             document.getElementById('summary-table').innerHTML = `
-                <tr>
-                    <td>פאנלים לקירות</td>
-                    <td>${panelSize*100}×${panelSize*100}</td>
-                    <td>${wallPanels}</td>
-                </tr>
-                <tr>
-                    <td>פאנלים לגג</td>
-                    <td>${panelSize*100}×${panelSize*100}</td>
-                    <td>${roofPanels}</td>
-                </tr>
-                <tr>
-                    <td>ניצבים</td>
-                    <td>-</td>
-                    <td>${verticalSupports}</td>
-                </tr>
-                <tr>
-                    <td>פאנלים לדלת וחלונות</td>
-                    <td>${panelSize*100}×${panelSize*100}</td>
-                    <td>${doorWindowPanels}</td>
-                </tr>
-            `;
-            
+            <tr>
+                <td>פאנלים לקירות</td>
+                <td>${panelSize * 100}×${panelSize * 100}</td>
+                <td>${wallPanels}</td>
+                <td>${wallPanelsCost.toFixed(2)} ₪</td>
+            </tr>
+            <tr>
+                <td>פאנלים לגג</td>
+                <td>${panelSize * 100}×${panelSize * 100}</td>
+                <td>${roofPanels}</td>
+                <td>${roofPanelsCost.toFixed(2)} ₪</td>
+            </tr>
+            <tr>
+                <td>ניצבים</td>
+                <td>-</td>
+                <td>${verticalSupports}</td>
+                <td>${supportsCost.toFixed(2)} ₪</td>
+            </tr>
+            <tr>
+                <td>פתחים (דלת וחלונות)</td>
+                <td>-</td>
+                <td>${doorWindowPanels}</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td colspan="3">סה"כ עלות</td>
+                <td>${totalCost.toFixed(2)} ₪</td>
+            </tr>
+        `;
+        
             // עדכון סך הכל
-            document.getElementById('total-panels').textContent = wallPanels + roofPanels + doorWindowPanels;
-        }
+            document.getElementById('total-panels').textContent = 
+        wallPanels + roofPanels + verticalSupports - doorWindowPanels;
+}
         
         function animate() {
             requestAnimationFrame(animate);

@@ -1,49 +1,51 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
     <link rel="stylesheet" href="/src/style.css" />
     <script type="module" src="/src/main.js"></script>
-  </head>
-  <body>
+</head>
+
+<body>
     <header>
         <h1>סימולטור מבנים - פאנל בנייה קלה</h1>
     </header>
-    
+
     <div class="container">
         <div class="main-content">
             <div class="controls">
                 <h2>הגדרות המבנה</h2>
-                
+
                 <div class="panel-size-toggle">
                     <button id="size-small" class="active">50×50 ס"מ</button>
                     <button id="size-large">100×100 ס"מ</button>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="width">רוחב (במטרים):</label>
                     <input type="number" id="width" min="1" max="20" value="3" step="0.5">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="length">אורך (במטרים):</label>
                     <input type="number" id="length" min="1" max="20" value="4" step="0.5">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="height">גובה (במטרים):</label>
                     <input type="number" id="height" min="2" max="10" value="2.5" step="0.5">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="roof-angle">זווית הגג (במעלות):</label>
                     <input type="range" id="roof-angle" min="15" max="45" value="30" step="5">
                     <span id="roof-angle-value">30°</span>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="door-position">מיקום דלת כניסה:</label>
                     <select id="door-position">
@@ -53,21 +55,55 @@
                         <option value="right">ימין</option>
                         <option value="none">ללא דלת</option>
                     </select>
+                    <label for="door-offset">מרחק מהקצה (במטרים):</label>
+                    <input type="number" id="door-offset" min="0" step="0.5" value="1">
                 </div>
-                
+
+                <div class="windows-container">
+                    <h3>חלונות</h3>
+                    <button id="add-window">הוסף חלון</button>
+                    <div id="windows-list">
+                        <div class="window-item">
+                            <select class="window-wall">
+                                <option value="front">חזית</option>
+                                <option value="back">אחורי</option>
+                                <option value="left">שמאל</option>
+                                <option value="right">ימין</option>
+                            </select>
+                            <select class="window-size">
+                                <option value="0.5">0.5×0.5 מטר</option>
+                                <option value="1.0" selected>1.0×1.0 מטר</option>
+                                <option value="1.5">1.5×1.5 מטר</option>
+                            </select>
+                            <input type="number" class="window-offset" min="0" step="0.5" value="1"
+                                placeholder="מרחק מהקצה">
+                            <input type="number" class="window-height" min="0.5" step="0.5" value="1.5"
+                                placeholder="גובה מהרצפה">
+                            <button class="remove-window">הסר</button>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label for="window-count">מספר חלונות:</label>
-                    <input type="number" id="window-count" min="0" max="10" value="2">
+                    <label for="wall-panel-price">מחיר לפאנל קיר:</label>
+                    <input type="number" id="wall-panel-price" value="15">
                 </div>
-                
+                <div class="form-group">
+                    <label for="roof-panel-price">מחיר לפאנל גג:</label>
+                    <input type="number" id="roof-panel-price" value="20">
+                </div>
+                <div class="form-group">
+                    <label for="support-price">מחיר לניצב:</label>
+                    <input type="number" id="support-price" value="100">
+                </div>
+
                 <button id="calculate-btn">חשב כמות פאנלים נדרשת</button>
             </div>
-            
+
             <div class="visualization">
                 <div id="scene-container"></div>
             </div>
         </div>
-        
+
         <div class="summary">
             <h2>סיכום מבנה</h2>
             <table>
@@ -110,4 +146,5 @@
         </div>
     </div>
 </body>
+
 </html>
