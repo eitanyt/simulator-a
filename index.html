@@ -12,7 +12,7 @@
 
 <body dir="rtl">
     <header>
-        <h1>סימולטור מבנים - איך יראה הבית שלך?</h1>
+        <h1>איך יראה הבית שלך?</h1>
     </header>
 
     <div class="container">
@@ -65,24 +65,25 @@
                     <div id="windows-list">
                         <div class="window-item">
                             <select class="window-wall">
+                                <option value="left">שמאל</option>
                                 <option value="front">חזית</option>
                                 <option value="back">אחורי</option>
-                                <option value="left">שמאל</option>
                                 <option value="right">ימין</option>
                             </select>
-                            <select class="window-size">
+                            <select class="window-size" title="גודל חלון">
                                 <option value="0.5">0.5×0.5 מטר</option>
                                 <option value="1.0" selected>1.0×1.0 מטר</option>
                                 <option value="1.5">1.5×1.5 מטר</option>
                             </select>
-                            <input type="number" class="window-offset" min="0" step="0.5" value="1"
+                            <input type="number" title="מיקום" class="window-offset" min="0" step="0.5" value="1"
                                 placeholder="מרחק מהקצה">
-                            <input type="number" class="window-height" min="0.5" step="0.5" value="1.5"
+                            <input type="number" title="גובה חלון" class="window-height" min="0.5" step="0.5" value="1.5"
                                 placeholder="גובה מהרצפה">
                             <button class="remove-window">הסר</button>
                         </div>
                     </div>
                 </div>
+                <h3>מחיר</h3>
                 <div class="form-group">
                     <label for="wall-panel-price">מחיר לפאנל קיר:</label>
                     <input type="number" id="wall-panel-price" value="15">
@@ -96,7 +97,7 @@
                     <input type="number" id="support-price" value="100">
                 </div>
 
-                <button id="calculate-btn">חשב כמות פאנלים נדרשת</button>
+                <button id="calculate-btn">חשב כמות פאנלים נדרשת - הדמיה</button>
             </div>
 
             <div class="visualization">
